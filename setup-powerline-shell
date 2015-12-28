@@ -1,0 +1,70 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+   echo "*** This script must be run as root" 
+   exit 1
+fi
+
+if [[ -z "$1" ]]; then
+	echo "*** Please specify the target user for powerline shell"
+	exit 1
+fi
+
+mkdir -p /usr/local/src/
+
+if [[ -d /usr/local/src/powerline-shell ]]; then
+	cd /usr/local/src/powerline-shell
+	git pull
+else
+	git clone https://github.com/milkbikis/powerline-shell /usr/local/src/powerline-shell
+	cd /usr/local/src/powerline-shell
+fi
+
+cat > /usr/local/src/powerline-shell/config.py << END_CONFIG_PY 
+SEGMENTS = [
+    'set_term_title',
+    'username',
+    'hostname',
+    'ssh',
+    'cwd',
+    'read_only',
+    'git',
+    'svn',
+    'jobs',
+    'root',
+]
+THEME = 'default'
+END_CONFIG_PY
+
+./install.py
+
+mkdir -p /usr/local/bin
+install --mode 0755 ./powerline-shell.py /usr/local/bin/ 
+
+if [[ -d /usr/local/src/powerline-shell ]]; then
+	cd /usr/local/src/powerline-fonts
+	git pull
+else
+	git clone https://github.com/powerline/fonts.git /usr/local/src/powerline-fonts
+	cd /usr/local/src/powerline-fonts
+fi
+
+su -c "./install.sh" $1
+
+if [[ -z "$(grep powerline-shell.py /home/$1/.bashrc)" ]]; then
+	cat >> /home/$1/.bashrc << END_BASHRC
+
+function _update_ps1() {
+    PS1="\$(~/powerline-shell.py \$? 2> /dev/null)"
+}
+
+if [ "\$TERM" != "linux" ]; then
+    PROMPT_COMMAND="_update_ps1; \$PROMPT_COMMAND"
+fi
+
+END_BASHRC
+	echo "--- /home/$1/.bashrc updated"
+else
+	echo "--- /home/$1/.bashrc already updated"
+fi
+

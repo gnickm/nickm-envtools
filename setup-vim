@@ -1,0 +1,37 @@
+#!/bin/bash
+
+echo "--- Installing vim full and curl"
+if [[ $EUID -ne 0 ]]; then
+	sudo apt-get -qy install vim curl
+else
+	apt-get -qy install vim curl
+fi
+
+if [[ ! -f ~/.vimrc ]]; then
+	cat > ~/.vimrc << END_VIMRC
+syntax on
+filetype plugin indent on
+set number
+set tabstop=4 softtabstop=0 noexpandtab shiftwidth=4
+END_VIMRC
+	echo "--- Installed new .vimrc file"
+fi
+
+echo "--- Installing pathogen package manager"
+mkdir -p ~/.vim/autoload ~/.vim/bundle
+curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+
+if [[ -z "$(grep pathogen.infect ~/.vimrc)" ]]; then
+	cat > ~/.vimrc << END_VIMRC
+execute pathogen#infect()
+END_VIMRC
+	echo "--- Adding pathogen to existing .vimrc file"
+fi 
+
+echo "--- Installing vim packages"
+cd ~/.vim/bundle
+git clone git://github.com/tpope/vim-sensible.git
+git clone https://github.com/kien/ctrlp.vim.git
+git clone https://github.com/scrooloose/syntastic.git
+git clone git://github.com/airblade/vim-gitgutter.git
+
