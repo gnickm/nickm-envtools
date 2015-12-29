@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. ./shared-functions
+
 echo "--- Installing vim full and curl"
 if [[ $EUID -ne 0 ]]; then
 	sudo apt-get -qy install vim curl
@@ -22,7 +24,7 @@ mkdir -p ~/.vim/autoload ~/.vim/bundle
 curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 
 if [[ -z "$(grep pathogen.infect ~/.vimrc)" ]]; then
-	cat > ~/.vimrc << END_VIMRC
+	cat >> ~/.vimrc << END_VIMRC
 execute pathogen#infect()
 execute pathogen#helptags()
 END_VIMRC
@@ -30,11 +32,10 @@ END_VIMRC
 fi 
 
 echo "--- Installing vim packages"
-cd ~/.vim/bundle
-git clone git://github.com/tpope/vim-sensible.git
-git clone https://github.com/kien/ctrlp.vim.git
-git clone https://github.com/scrooloose/syntastic.git
-git clone git://github.com/airblade/vim-gitgutter.git
-git clone https://github.com/Raimondi/delimitMate.git
+gitclonepull git://github.com/tpope/vim-sensible.git ~/.vim/bundle/vim-sensible
+gitclonepull https://github.com/kien/ctrlp.vim.git ~/.vim/bundle/ctrlp.vim
+gitclonepull https://github.com/scrooloose/syntastic.git ~/.vim/bundle/syntastic
+gitclonepull git://github.com/airblade/vim-gitgutter.git ~/.vim/bundle/vim-gitgutter
+gitclonepull https://github.com/Raimondi/delimitMate.git ~/.vim/bundle/delimitMate
 
 echo "--- Done!"

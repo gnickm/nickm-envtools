@@ -1,0 +1,10 @@
+# Shared functions
+
+gitclonepull() {
+	if [[ -d "$2" ]]; then
+		bash -c "cd $2; git pull"
+	else
+		git clone $1 $2
+	fi
+}
+
