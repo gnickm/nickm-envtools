@@ -24,6 +24,7 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 if [[ -z "$(grep pathogen.infect ~/.vimrc)" ]]; then
 	cat > ~/.vimrc << END_VIMRC
 execute pathogen#infect()
+execute pathogen#helptags()
 END_VIMRC
 	echo "--- Adding pathogen to existing .vimrc file"
 fi 
@@ -34,4 +35,6 @@ git clone git://github.com/tpope/vim-sensible.git
 git clone https://github.com/kien/ctrlp.vim.git
 git clone https://github.com/scrooloose/syntastic.git
 git clone git://github.com/airblade/vim-gitgutter.git
+git clone https://github.com/Raimondi/delimitMate.git
 
+echo "--- Done!"

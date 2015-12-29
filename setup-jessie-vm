@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "--- Installing additional packages"
+apt-get -y install \
+	vim \
+	build-essential \
+	linux-headers-$(uname -r)
+
+echo "--- Installing VBox additions"
+cp /media/cdrom/VBoxLinuxAdditions.run $HOME/
+$HOME/VBoxLinuxAdditions.run
+rm $HOME/VBoxLinuxAdditions.run
+
+echo "========================================"
+echo "FINAL TASKS"
+echo "========================================"
+echo
+echo "- Sakura"
+echo "  * Set Options > More > Set palette > Xterm"
+
