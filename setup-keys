@@ -1,0 +1,35 @@
+#!/bin/bash
+
+. ./shared-functions
+
+echo "--- Installing gpg"
+if [[ $EUID -ne 0 ]]; then
+	sudo apt-get -qy install gnupg
+else
+	apt-get -qy install gnupg
+fi
+
+echo "--- Creating $HOME/.ssh"
+mkdir -p $HOME/.ssh
+chmod 0700 $HOME/.ssh
+
+if [[ ! -f $HOME/.ssh/id_rsa ]]; then
+	echo "--- Generating local SSH keys"
+	ssh-keygen -t rsa -N "" -f $HOME/.ssh/id_rsa
+fi
+
+echo "--- Installing nickmdev public key"
+install --mode 0644 id_rsa_nickmdev.pub $HOME/.ssh/
+
+echo "--- Decrypting nickmdev private key"
+gpg -o $HOME/.ssh/id_rsa_nickmdev -d id_rsa_nickmdev.gpg
+chmod 0600 $HOME/.ssh/id_rsa_nickmdev
+
+touch $HOME/.ssh/config
+if [[ -z "$(grep id_rsa_nickmdev $HOME/.ssh/config)" ]]; then
+	echo "--- Adding identity files to config"
+	echo "IdentityFile ~/.ssh/id_rsa" >> $HOME/.ssh/config
+	echo "IdentityFile ~/.ssh/id_rsa_nickmdev" >> $HOME/.ssh/config
+fi
+
+echo "--- Done!"
