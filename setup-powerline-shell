@@ -35,19 +35,20 @@ END_CONFIG_PY
 mkdir -p /usr/local/bin
 install --mode 0755 ./powerline-shell.py /usr/local/bin/ 
 
-
 gitclonepull https://github.com/powerline/fonts.git /usr/local/src/powerline-fonts
 cd /usr/local/src/powerline-fonts
 
 su -c "./install.sh" $1
 
-if [[ -z "$(grep powerline-shell.py /home/$1/.bashrc)" ]]; then
-	cat >> /home/$1/.bashrc << END_BASHRC
+TARGETHOME=$(eval echo "~$1")
+touch $TARGETHOME/.bashrc
+if [[ -z "$(grep powerline-shell.py $TARGETHOME/.bashrc)" ]]; then
+	cat >> $TARGETHOME/.bashrc << END_BASHRC
 
 ### powerline-shell prompt
 
 function _update_ps1() {
-    PS1="\$(~/powerline-shell.py \$? 2> /dev/null)"
+    PS1="\$(/usr/local/bin/powerline-shell.py \$? 2> /dev/null)"
 }
 
 if [ "\$TERM" != "linux" ]; then
@@ -57,9 +58,9 @@ fi
 ### end powerline-shell prompt
 
 END_BASHRC
-	echo "--- /home/$1/.bashrc updated"
+	echo "--- $TARGETHOME/.bashrc updated"
 else
-	echo "--- /home/$1/.bashrc already updated"
+	echo "--- $TARGETHOME/.bashrc already updated"
 fi
 
 echo "--- Done!"
