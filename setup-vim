@@ -38,4 +38,21 @@ gitclonepull https://github.com/scrooloose/syntastic.git ~/.vim/bundle/syntastic
 gitclonepull git://github.com/airblade/vim-gitgutter.git ~/.vim/bundle/vim-gitgutter
 gitclonepull https://github.com/Raimondi/delimitMate.git ~/.vim/bundle/delimitMate
 
+echo "--- Configuring syntastic"
+if [[ -z "$(grep syntastic ~/.vimrc)" ]]; then
+	cat >> ~/.vimrc << END_VIMRC
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+END_VIMRC
+	echo "--- Adding syntastic config to existing .vimrc file"
+fi 
+if [[ -z "$(grep eslint ~/.vimrc)" && -x /usr/bin/eslint ]]; then
+	cat >> ~/.vimrc << END_VIMRC
+let g:syntastic_javascript_checkers = ['eslint']
+END_VIMRC
+	echo "--- Enabling eslint for syntastic using existing .vimrc file"
+fi 
+
 echo "--- Done!"
