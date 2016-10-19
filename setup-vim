@@ -55,4 +55,10 @@ END_VIMRC
 	echo "--- Enabling eslint for syntastic using existing .vimrc file"
 fi 
 
+echo "--- Configuring ctrlp"
+if [[ -z "$(grep ctrlp ~/.vimrc)" ]]; then
+	cat >> ~/.vimrc << END_VIMRC
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
+END_VIMRC
+
 echo "--- Done!"
