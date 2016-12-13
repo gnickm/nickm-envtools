@@ -37,6 +37,7 @@ gitclonepull https://github.com/kien/ctrlp.vim.git ~/.vim/bundle/ctrlp.vim
 gitclonepull https://github.com/scrooloose/syntastic.git ~/.vim/bundle/syntastic
 gitclonepull git://github.com/airblade/vim-gitgutter.git ~/.vim/bundle/vim-gitgutter
 gitclonepull https://github.com/Raimondi/delimitMate.git ~/.vim/bundle/delimitMate
+gitclonepull git://github.com/mustache/vim-mustache-handlebars.git ~/.vim/bundle/mustache
 
 echo "--- Configuring syntastic"
 if [[ -z "$(grep syntastic ~/.vimrc)" ]]; then
