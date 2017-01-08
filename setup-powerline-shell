@@ -11,7 +11,7 @@ fi
 
 mkdir -p /usr/local/src/
 
-gitclonepull https://github.com/milkbikis/powerline-shell /usr/local/src/powerline-shell
+gitclonepull https://github.com/gnickm/powerline-shell.git /usr/local/src/powerline-shell
 cd /usr/local/src/powerline-shell
 
 cat > /usr/local/src/powerline-shell/config.py << END_CONFIG_PY 
