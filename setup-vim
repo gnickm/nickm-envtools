@@ -4,9 +4,9 @@
 
 echo "--- Installing vim full and curl"
 if [[ $EUID -ne 0 ]]; then
-	sudo apt-get -qy install vim curl
+	sudo apt-get -qy install vim curl shellcheck
 else
-	apt-get -qy install vim curl
+	apt-get -qy install vim curl shellcheck
 fi
 
 if [[ ! -f ~/.vimrc ]]; then
@@ -24,13 +24,13 @@ echo "--- Installing pathogen package manager"
 mkdir -p ~/.vim/autoload ~/.vim/bundle
 curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 
-if [[ -z "$(grep pathogen.infect ~/.vimrc)" ]]; then
+if ! grep -q pathogen.infect ~/.vimrc; then
 	cat >> ~/.vimrc << END_VIMRC
 execute pathogen#infect()
 execute pathogen#helptags()
 END_VIMRC
 	echo "--- Adding pathogen to existing .vimrc file"
-fi 
+fi
 
 echo "--- Installing vim packages"
 gitclonepull git://github.com/tpope/vim-sensible.git ~/.vim/bundle/vim-sensible
@@ -41,7 +41,7 @@ gitclonepull https://github.com/Raimondi/delimitMate.git ~/.vim/bundle/delimitMa
 gitclonepull git://github.com/mustache/vim-mustache-handlebars.git ~/.vim/bundle/mustache
 
 echo "--- Configuring syntastic"
-if [[ -z "$(grep syntastic ~/.vimrc)" ]]; then
+if ! grep -q syntastic ~/.vimrc; then
 	cat >> ~/.vimrc << END_VIMRC
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
@@ -50,17 +50,33 @@ let g:syntastic_check_on_wq = 0
 END_VIMRC
 	echo "--- Adding syntastic config to existing .vimrc file"
 fi 
-if [[ -z "$(grep eslint ~/.vimrc)" && -x /usr/bin/eslint ]]; then
+
+if ! grep -q eslint ~/.vimrc && [[ -x /usr/bin/eslint ]]; then
 	cat >> ~/.vimrc << END_VIMRC
 let g:syntastic_javascript_checkers = ['eslint']
 END_VIMRC
 	echo "--- Enabling eslint for syntastic using existing .vimrc file"
 fi 
 
+if ! grep -q shellcheck ~/.vimrc; then
+	cat >> ~/.vimrc << END_VIMRC
+let g:syntastic_shell_checkers = ['shellcheck']
+END_VIMRC
+	echo "--- Enabling shellcheck for syntastic using existing .vimrc file"
+fi 
+
 echo "--- Configuring ctrlp"
-if [[ -z "$(grep ctrlp ~/.vimrc)" ]]; then
+if ! grep -q ctrlp ~/.vimrc; then
 	cat >> ~/.vimrc << END_VIMRC
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
+END_VIMRC
+fi
+
+echo "--- Addding whitespace handling stuff"
+if ! grep -q BufWritePre ~/.vimrc; then
+	cat >> ~/.vimrc << END_VIMRC
+autocmd FileType c,cpp,java,php,javascript,mustache,sh autocmd BufWritePre <buffer> %s/\s\+$//e
+command NoTabs set expandtab|set tabstop=4
 END_VIMRC
 fi
 
