@@ -49,21 +49,21 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 END_VIMRC
 	echo "--- Adding syntastic config to existing .vimrc file"
-fi 
+fi
 
 if ! grep -q eslint ~/.vimrc && [[ -x /usr/bin/eslint ]]; then
 	cat >> ~/.vimrc << END_VIMRC
 let g:syntastic_javascript_checkers = ['eslint']
 END_VIMRC
 	echo "--- Enabling eslint for syntastic using existing .vimrc file"
-fi 
+fi
 
 if ! grep -q shellcheck ~/.vimrc; then
 	cat >> ~/.vimrc << END_VIMRC
 let g:syntastic_shell_checkers = ['shellcheck']
 END_VIMRC
 	echo "--- Enabling shellcheck for syntastic using existing .vimrc file"
-fi 
+fi
 
 echo "--- Configuring ctrlp"
 if ! grep -q ctrlp ~/.vimrc; then
@@ -77,6 +77,7 @@ if ! grep -q BufWritePre ~/.vimrc; then
 	cat >> ~/.vimrc << END_VIMRC
 autocmd FileType c,cpp,java,php,javascript,mustache,sh autocmd BufWritePre <buffer> %s/\s\+$//e
 command NoTabs set expandtab|set tabstop=4
+set pastetoggle=<F2>
 END_VIMRC
 fi
 
