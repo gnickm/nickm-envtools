@@ -14,7 +14,7 @@ if [[ ! -f ~/.vimrc ]]; then
 syntax on
 filetype plugin indent on
 set number
-set tabstop=4 softtabstop=0 noexpandtab shiftwidth=4
+set tabstop=4 softtabstop=0 expandtab shiftwidth=4
 hi Search ctermbg=1
 END_VIMRC
 	echo "--- Installed new .vimrc file"
